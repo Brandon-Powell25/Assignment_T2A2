@@ -5,8 +5,8 @@ from models.user import User
 db_commands = Blueprint('db', __name__)
 
 @db_commands.cli.command('create')
-def create_db():
-    db.create_db()
+def create_all():
+    db.create_all()
     print("Tables Created")
 
 @db_commands.cli.command('drop')
