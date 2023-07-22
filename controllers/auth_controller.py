@@ -10,26 +10,26 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @auth_bp.route('/register', methods=['POST'])
 def auth_register():
+    # try block
     try:
         body_data = request.get_json()
-
+        # Creates a new user instance from the user info
         user = User()
         user.name = body_data.get('name')
         user.email = body_data.get('email')
         user.password = bcrypt.generate_password_hash(body_data.get('password')).decode('utf-8')
-
         # adds the users to the session
         db.session.add(user)
         # commit to add the user to database
         db.session.commit()
         # respond to the client
         return user_schema.dump(user), 201
-        
+    # except error block    
     except IntegrityError as err:
         if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
             return { 'errorr': 'Email address already in use'}, 409
         if err.orig.pgcode == errorcodes.NOT_VULL_VIOLATION:
-            return { 'error': 'Email is required'}
+            return { 'error': f'The {err.orig.diag.column_name} is required'}, 409
         
 
 @auth_bp.route('/login', methods=['POST'])
@@ -40,7 +40,7 @@ def auth_login():
     user = db.session.scalar(stmt)
     # if user exist and password is correct
     if user and bcrypt.check_password_hash(user.password, body_data.get('password')):
-        token = create_access_token(identity=str(user,id), expires_delta=timedelta(days=30))
+        token = create_access_token(identity=str(user.id), expires_delta=timedelta=False)
         return { 'email': user.email, 'token': token, 'is_admin': user.is_admin}
     else:
-        return { 'error': 'Invalid email or password'}
+        return { 'error': 'Invalid email or password'}, 401
