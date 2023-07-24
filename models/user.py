@@ -14,12 +14,12 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_admin = db.Column(db.Boolean, default=False)
 
-    tasks = db.relationship('Task', secondary='user_task', backref='users')
+    cards = db.relationship('Task', back_populates='user', cascade='all, delete')
 
 class UserSchema(ma.Schema):
-    tasks = fields.list(fields.Nested('TaskSchema', exclude=['user']))
+    tasks = fields.List(fields.Nested('TaskSchema', exclude=['user']))
     class Meta:
-        fields = ('id', 'name', 'email', 'password', 'created_at', 'is_admin')
+        fields = ('id', 'name', 'email', 'password', 'created_at', 'is_admin', 'task')
 
 user_schema = UserSchema(exclude=['password'])
 users_schema = UserSchema(many=True, exclude=['password'])
