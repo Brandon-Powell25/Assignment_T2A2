@@ -6,8 +6,10 @@ from sqlalchemy.exc import IntegrityError
 from psycopg2 import errorcodes
 from datetime import timedelta
 
+# Creates a Flask Blueprint with the /auth endpoint
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
+# POST endpoint to register a user
 @auth_bp.route('/register', methods=['POST'])
 def auth_register():
     # try block
