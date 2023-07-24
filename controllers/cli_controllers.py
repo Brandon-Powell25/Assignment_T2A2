@@ -75,6 +75,7 @@ def seed_db():
     ]
     db.session.add_all(tasks)
 
+    # commits all tasks
     db.session.commit()
 
     print('Tables Seeded')

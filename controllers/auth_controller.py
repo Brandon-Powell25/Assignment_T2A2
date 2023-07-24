@@ -27,20 +27,22 @@ def auth_register():
     # except error block    
     except IntegrityError as err:
         if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
-            return { 'errorr': 'Email address already in use'}, 409
-        if err.orig.pgcode == errorcodes.NOT_VULL_VIOLATION:
-            return { 'error': f'The {err.orig.diag.column_name} is required'}, 409
+            error_message = 'Email address already in use'
+        elif err.orig.pgcode == errorcodes.NOT_VULL_VIOLATION:
+            error_message = f'The {err.orig.diag.column_name} is required'
+        return { 'error': error_message}
         
 
 @auth_bp.route('/login', methods=['POST'])
 def auth_login():
-    body_data = request.get.json()
+    body_data = request.get_json()
     # find the user by their email
     stmt = db.select(User).filter_by(email=body_data.get('email'))
     user = db.session.scalar(stmt)
     # if user exist and password is correct
     if user and bcrypt.check_password_hash(user.password, body_data.get('password')):
-        token = create_access_token(identity=str(user.id), expires_delta=timedelta=False)
+        token = create_access_token(identity=str(user.id), expires_delta=False)
         return { 'email': user.email, 'token': token, 'is_admin': user.is_admin}
     else:
         return { 'error': 'Invalid email or password'}, 401
+   

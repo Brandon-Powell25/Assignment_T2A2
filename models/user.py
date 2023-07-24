@@ -1,6 +1,7 @@
 from init import db, ma
 from datetime import datetime
 from marshmallow import fields
+from models.task import Task
 
 class User(db.Model):
     # Define the table name
@@ -14,12 +15,12 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_admin = db.Column(db.Boolean, default=False)
 
-    cards = db.relationship('Task', back_populates='user', cascade='all, delete')
+    tasks = db.relationship('Task', back_populates='user', cascade='all, delete')
 
 class UserSchema(ma.Schema):
     tasks = fields.List(fields.Nested('TaskSchema', exclude=['user']))
     class Meta:
-        fields = ('id', 'name', 'email', 'password', 'created_at', 'is_admin', 'task')
+        fields = ('id', 'name', 'email', 'password', 'created_at', 'is_admin', 'tasks')
 
 user_schema = UserSchema(exclude=['password'])
 users_schema = UserSchema(many=True, exclude=['password'])
