@@ -98,7 +98,7 @@ def seed_db():
             tasks=tasks[2]
         )
     ]
-
+    db.session.add_all(comments)
     # commits all tasks
     db.session.commit()
 
