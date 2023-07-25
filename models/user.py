@@ -2,6 +2,7 @@ from init import db, ma
 from datetime import datetime
 from marshmallow import fields
 from models.task import Task
+from models.comment import Comment
 
 class User(db.Model):
     # Define the table name
@@ -16,6 +17,7 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False)
 
     tasks = db.relationship('Task', back_populates='user', cascade='all, delete')
+    comments = db.relationship('Comment', back_populates='user')
 
 class UserSchema(ma.Schema):
     tasks = fields.List(fields.Nested('TaskSchema', exclude=['user']))
