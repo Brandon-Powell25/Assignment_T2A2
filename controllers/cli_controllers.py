@@ -2,6 +2,7 @@ from flask import Blueprint
 from init import db, bcrypt
 from models.user import User
 from models.task import Task
+from models.comment import Comment
 from datetime import datetime
 
 db_commands = Blueprint('db', __name__)
@@ -74,6 +75,29 @@ def seed_db():
         )
     ]
     db.session.add_all(tasks)
+
+    comments = [
+        Comment(
+            comment="Need to get a top of cleaning",
+            user=users[0],
+            tasks=tasks[0]
+        ),
+        Comment(
+            comment='what a good work-out',
+            user=users[0],
+            tasks=tasks[2]
+        ),
+        Comment(
+            comment="where do you train?",
+            user=users[1],
+            tasks=tasks[2]
+        ),
+        Comment(
+            comment="I train at home",
+            user=users[0],
+            tasks=tasks[2]
+        )
+    ]
 
     # commits all tasks
     db.session.commit()
