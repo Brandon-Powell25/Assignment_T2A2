@@ -1,7 +1,7 @@
 from init import db, ma 
 from datetime import datetime
 from marshmallow import fields
-
+from models.comment import Comment
 
 class Task(db.Model):
     __tablename__ = 'tasks'
@@ -14,7 +14,7 @@ class Task(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    comments = db.relationship('Comment', back_populates='tasks')
+    comments = db.relationship('Comment', back_populates='tasks', foreign_keys=[Comment.task_id])
     user = db.relationship('User', back_populates='tasks')
 
 class TaskSchema(ma.Schema):    

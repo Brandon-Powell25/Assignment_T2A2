@@ -17,7 +17,7 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False)
 
     tasks = db.relationship('Task', back_populates='user', cascade='all, delete')
-    comments = db.relationship('Comment', back_populates='user')
+    comments = db.relationship('Comment', back_populates='user', cascade='all, delete')
 
 class UserSchema(ma.Schema):
     tasks = fields.List(fields.Nested('TaskSchema', exclude=['user']))

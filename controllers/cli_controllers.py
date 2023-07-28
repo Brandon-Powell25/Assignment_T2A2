@@ -27,9 +27,9 @@ def seed_db():
             is_admin=True
         ),
         User(
-        name = 'Jeffery',
-        email = 'jeffery@email.com',
-        password=bcrypt.generate_password_hash('Jeff12').decode('utf-8')
+            name = 'Jeffery',
+            email = 'jeffery@email.com',
+            password=bcrypt.generate_password_hash('Jeff12').decode('utf-8')
         )
     ]
 
@@ -78,7 +78,7 @@ def seed_db():
 
     comments = [
         Comment(
-            comment="Need to get a top of cleaning",
+            comment="Need to get on top of cleaning",
             user=users[0],
             tasks=tasks[0]
         ),

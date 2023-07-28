@@ -9,6 +9,7 @@ from datetime import timedelta
 # Creates a Flask Blueprint with the /auth endpoint
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
+
 # POST endpoint to register a user
 @auth_bp.route('/register', methods=['POST'])
 def auth_register():
@@ -19,13 +20,18 @@ def auth_register():
         user = User()
         user.name = body_data.get('name')
         user.email = body_data.get('email')
+
         user.password = bcrypt.generate_password_hash(body_data.get('password')).decode('utf-8')
+
         # adds the users to the session
         db.session.add(user)
+
         # commit to add the user to database
         db.session.commit()
+
         # respond to the client
         return user_schema.dump(user), 201
+    
     # except error block    
     except IntegrityError as err:
         if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
