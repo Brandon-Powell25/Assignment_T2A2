@@ -1,10 +1,13 @@
 from flask import Blueprint, request, jsonify
 from init import db
 from models.task import Task, tasks_schema, task_schema
+from models.comment import Comment, comment_schema, comments_Schema
 from datetime import date
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from controllers.comment_controller import comments_bp
 
 tasks_bp = Blueprint('tasks', __name__, url_prefix='/task')
+tasks_bp.register_blueprint(comments_bp)
 
 @tasks_bp.route('/')
 def get_all_task():
@@ -25,13 +28,13 @@ def get_one_task(id):
 @tasks_bp.route('/', methods=['POST'])
 @jwt_required()
 def create_task():
-    body_data = request.get_json()
+    body_data = task_schema.load(request.get_json())
     # Creat a new tasks instance
     task = Task(
         title=body_data.get('title'),
         description=body_data.get('description'),
         due_date=body_data.get('due_date'),
-        created_at=body_data.get('created_at'),
+        created_at=body_data.get('created_at'), # Month, date, Year 
         user_id=get_jwt_identity()
     )
     # add task to the session
@@ -60,10 +63,12 @@ def update_task(id):
     if not task:
         return {'error': f'Task not found with id {id}'}, 404
     # Gets the data of json from the request
-    data = request.get_json()
+    data = task_schema.load(request.get_json(), partial=True)
     #update the task attribute with new values
     for key, value in data.items():
         setattr(task, key, value)
         # Commit the changes and return a success message
     db.session.commit()
     return {'message': f'Task {task.title} Updated Successfully'}
+
+
