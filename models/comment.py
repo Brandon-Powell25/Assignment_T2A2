@@ -19,7 +19,7 @@ class CommentSchema(ma.Schema):
     tasks = fields.Nested('TaskSchema', exclude=['comments'])
 
     class Meta:
-        fields = ('id', 'comment', 'task', 'user')
+        fields = ('id', 'comment', 'tasks', 'user')
         ordered = True
 
 comment_schema = CommentSchema()

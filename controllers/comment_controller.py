@@ -55,7 +55,7 @@ def delete_comment(task_id, comment_id):
         return {'error': f'Task not found wiht id {task_id}'}, 404
 
 @comments_bp.route('/<int:comment_id>', methods=['PUT', 'PATCH'])
-@jwt_required
+@jwt_required()
 def update_comment(task_id, comment_id):
     # Retrieve the task with giving id
     task = Task.query.get(task_id)

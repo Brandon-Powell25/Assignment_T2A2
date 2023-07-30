@@ -28,13 +28,13 @@ def get_one_task(id):
 @tasks_bp.route('/', methods=['POST'])
 @jwt_required()
 def create_task():
-    body_data = request.get_json()
+    body_data = task_schema.load(request.get_json())
     # Creat a new tasks instance
     task = Task(
         title=body_data.get('title'),
         description=body_data.get('description'),
         due_date=body_data.get('due_date'),
-        created_at=body_data.get('created_at'),
+        created_at=body_data.get('created_at'), # Month, date, Year 
         user_id=get_jwt_identity()
     )
     # add task to the session
@@ -63,7 +63,7 @@ def update_task(id):
     if not task:
         return {'error': f'Task not found with id {id}'}, 404
     # Gets the data of json from the request
-    data = request.get_json()
+    data = task_schema.load(request.get_json(), partial=True)
     #update the task attribute with new values
     for key, value in data.items():
         setattr(task, key, value)

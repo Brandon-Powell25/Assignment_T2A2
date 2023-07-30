@@ -20,9 +20,9 @@ class User(db.Model):
     comments = db.relationship('Comment', back_populates='user', cascade='all, delete')
 
 class UserSchema(ma.Schema):
-    tasks = fields.List(fields.Nested('TaskSchema', exclude=['user']))
+    tasks = fields.List(fields.String())
     class Meta:
-        fields = ('id', 'name', 'email', 'password', 'created_at', 'is_admin', 'tasks')
+        fields = ('id', 'name', 'email', 'password', 'created_at', 'is_admin', 'tasks', 'comment')
 
 user_schema = UserSchema(exclude=['password'])
 users_schema = UserSchema(many=True, exclude=['password'])
