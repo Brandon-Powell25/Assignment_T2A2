@@ -9,13 +9,15 @@ from controllers.comment_controller import comments_bp
 tasks_bp = Blueprint('tasks', __name__, url_prefix='/task')
 tasks_bp.register_blueprint(comments_bp)
 
-@tasks_bp.route('/')
+@tasks_bp.route('/', methods=['GET'])
+@jwt_required()
 def get_all_task():
     tasks = Task.query.all()
     result = tasks_schema.dump(tasks)
     return jsonify(result)
 
-@tasks_bp.route('/<int:id>')
+@tasks_bp.route('/<int:id>', methods=['GET'])
+@jwt_required()
 def get_one_task(id):
     stmt = db.select(Task).filter_by(id=id)
     task = db.session.scalar(stmt)
@@ -56,6 +58,7 @@ def delete_one_task(id):
         return {'error': f'Task not found with id {id}'}, 404
 
 @tasks_bp.route('/<int:id>', methods=['PUT', 'PATCH'])
+@jwt_required()
 def update_task(id):
     # Fetches task with given id from database
     task = Task.query.get(id)
